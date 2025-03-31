@@ -1,0 +1,266 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 220 33% 10%;
+    --foreground: 210 40% 98%;
+
+    --card: 217 33% 17%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 217 33% 17%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 217 91% 60%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 215 27% 20%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 215 27% 20%;
+    --muted-foreground: 215 20% 65%;
+
+    --accent: 215 27% 20%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217 33% 20%;
+    --input: 217 33% 20%;
+    --ring: 224 76% 60%;
+
+    --radius: 0.75rem;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html, body {
+    @apply h-full overflow-x-hidden;
+  }
+
+  body {
+    @apply bg-dashboard-bg text-foreground font-sans antialiased;
+    background-image: 
+      radial-gradient(circle at 10% 20%, rgba(20, 30, 48, 0.8) 0%, rgba(11, 17, 32, 0.8) 90%),
+      url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23203354' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"),
+      linear-gradient(135deg, #0b1120 0%, #122044 100%);
+    background-size: cover, 60px 60px, cover;
+    background-position: center, center, center;
+    background-attachment: fixed;
+  }
+
+  #root {
+    @apply h-full w-full max-w-none p-0 m-0;
+  }
+
+  /* Scrollbar styling */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-primary/30 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-primary/50;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-card-bg backdrop-blur-md border border-card-border rounded-xl;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  }
+  
+  .chart-container {
+    @apply w-full h-full;
+  }
+
+  .metric-value {
+    @apply text-2xl font-bold;
+    text-shadow: 0 0 10px rgba(66, 153, 225, 0.5);
+  }
+
+  .metric-unit {
+    @apply text-xs text-muted-foreground ml-1;
+  }
+
+  .metric-category-good {
+    @apply text-air-green;
+  }
+
+  .metric-category-moderate {
+    @apply text-air-yellow;
+  }
+
+  .metric-category-unhealthy {
+    @apply text-air-orange;
+  }
+
+  .metric-category-very-unhealthy {
+    @apply text-air-red;
+  }
+
+  .metric-category-hazardous {
+    @apply text-air-purple;
+  }
+
+  .dashboard-grid {
+    @apply grid gap-4 p-4 md:p-6 auto-rows-auto;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  }
+
+  .dashboard-header {
+    @apply col-span-full glass-card p-4 flex items-center justify-between;
+  }
+
+  .location-card {
+    @apply glass-card p-4 flex flex-col justify-between h-full;
+    min-height: 200px;
+  }
+
+  .map-container {
+    @apply glass-card p-0 overflow-hidden;
+    grid-column: span 2;
+    grid-row: span 2;
+    min-height: 300px;
+  }
+
+  .aqi-indicator {
+    @apply flex items-center gap-2;
+  }
+
+  .aqi-dot {
+    @apply w-3 h-3 rounded-full;
+  }
+
+  .gradient-border {
+    position: relative;
+  }
+
+  .gradient-border::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(
+      to right,
+      rgba(66, 153, 225, 0.5),
+      rgba(139, 92, 246, 0.5)
+    );
+    -webkit-mask: 
+      linear-gradient(#fff 0 0) content-box, 
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  .shimmer-effect {
+    @apply relative overflow-hidden;
+  }
+
+  .shimmer-effect::before {
+    content: "";
+    @apply absolute top-0 -left-[100%] w-[200%] h-full bg-gradient-to-r from-transparent via-white/10 to-transparent;
+    animation: shimmer 2s infinite linear;
+  }
+
+  /* Heat map styling */
+  .heat-map-layer {
+    @apply absolute inset-0 bg-opacity-70 z-10;
+    background: radial-gradient(
+      circle at center,
+      rgba(255, 0, 0, 0.4) 0%,
+      rgba(255, 165, 0, 0.3) 30%,
+      rgba(255, 255, 0, 0.2) 60%,
+      rgba(0, 128, 0, 0.1) 80%,
+      transparent 100%
+    );
+  }
+
+  /* Smaller charts */
+  .mini-chart {
+    @apply h-[120px] md:h-[150px] w-full;
+  }
+
+  /* Mobile sidebar styles */
+  .sidebar-toggle-button {
+    @apply fixed bottom-4 right-4 z-50 rounded-full h-12 w-12 bg-primary text-white flex items-center justify-center shadow-lg md:hidden;
+  }
+  
+  /* Only show smaller labels on mobile */
+  .metrics-grid {
+    @apply grid grid-cols-2 md:grid-cols-4 gap-3;
+  }
+  
+  @keyframes pulse-marker {
+    0% { transform: scale(1); opacity: 0.7; }
+    50% { transform: scale(1.2); opacity: 0.5; }
+    100% { transform: scale(1); opacity: 0.7; }
+  }
+  
+  .map-marker {
+    @apply absolute z-20 transform -translate-x-1/2 -translate-y-1/2;
+    animation: pulse-marker 2s infinite ease-in-out;
+  }
+  
+  .map-marker-pin {
+    @apply w-6 h-6 rounded-full bg-blue-500 border-2 border-white shadow-lg;
+  }
+  
+  .map-marker-label {
+    @apply absolute -top-10 left-1/2 transform -translate-x-1/2 bg-black/80 text-white px-2 py-1 rounded text-xs whitespace-nowrap;
+  }
+  
+  /* Heat map gradient scale */
+  .heat-scale {
+    @apply w-full h-2 rounded-full mb-2 flex overflow-hidden;
+  }
+  
+  .heat-scale-item {
+    @apply h-full flex-1;
+  }
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(50%); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Mobile sidebar animation */
+@keyframes slideIn {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes slideOut {
+  from { transform: translateX(0); }
+  to { transform: translateX(-100%); }
+}
+
+.sidebar-slide-in {
+  animation: slideIn 0.3s forwards;
+}
+
+.sidebar-slide-out {
+  animation: slideOut 0.3s forwards;
+}
